@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { Appbar , useTheme,Chip,Button} from 'react-native-paper';
@@ -9,7 +7,7 @@ const categories = ["Business", "Health", "Politics", "Sports", "Technology"];
 const API_KEY = "pub_217370aa4d8feee12fcb51a2d8bec0dde6d9b";
 
 const Home = () => {
- 
+  const [newsData, setNewsData] = useState(second)
   const [selectedCategories, setSelectedCategories] = useState([]);
   const handleSelect = (val: string) => {
     setSelectedCategories((prev: string[]) =>
@@ -19,24 +17,21 @@ const Home = () => {
     );
   };
 
-
-
-
   const handlePress = async () => {
-    const URL = `https://newsdata.io/api/1/news?apikey=${API_KEY}&country=tr&
-    language=en,fr,tr&${selectedCategories.length > 0 ?
-        `&category=${selectedCategories.join()}`
+    const URL = `https://newsdata.io/api/1/news?apikey=${API_KEY}&country=tr&language=en,fr,tr&${selectedCategories.length > 0
+        ?`&category=${selectedCategories.join()}`
         : ""
       }`;
     try {
-      await fectch(URL)
+      await fetch(URL)
         .then((res) => res.json())
-        .then((data) => console.log(data));
+        .then((data) => setNewsData(data.results));
     } catch (err) {
       console.log(err);
-      
     }
   };
+  console.log(Object.keys(newsData[0]));
+  
    
   return (
     <View style={styles.container}>
@@ -45,7 +40,8 @@ const Home = () => {
       </Appbar.Header>
       <View style={styles.filtersContainer}>
         {categories.map((cat) => (
-          <Chip key={cat} mode="outlined"
+          <Chip key={cat}
+            mode="outlined"
             style={styles.chipItem}
             textStyle={{
               fontWeight: "400",
